@@ -1,20 +1,31 @@
 from typing import List, Dict
 import re
 from collections import Counter
-from konlpy.tag import Okt
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
+# KoNLPy는 선택적 의존성 (Vercel 빌드 시 문제 방지)
+try:
+    from konlpy.tag import Okt
+    KONLPY_AVAILABLE = True
+except ImportError:
+    KONLPY_AVAILABLE = False
+    Okt = None
+
 class NewsAnalyzer:
     def __init__(self):
-        try:
-            self.okt = Okt()
-            self.use_konlpy = True
-        except Exception as e:
-            print(f"KoNLPy 초기화 실패: {e}. 기본 키워드 추출 방식을 사용합니다.")
+        if KONLPY_AVAILABLE:
+            try:
+                self.okt = Okt()
+                self.use_konlpy = True
+            except Exception as e:
+                print(f"KoNLPy 초기화 실패: {e}. 기본 키워드 추출 방식을 사용합니다.")
+                self.okt = None
+                self.use_konlpy = False
+        else:
             self.okt = None
             self.use_konlpy = False
         self.openai_api_key = os.getenv('OPENAI_API_KEY')
