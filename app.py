@@ -3,8 +3,13 @@ from crawler import NewsCrawler
 from analyzer import NewsAnalyzer
 from content_generator import ContentGenerator
 import json
+import os
 
 app = Flask(__name__)
+
+# Vercel 환경에서 정적 파일 경로 설정
+if os.environ.get('VERCEL'):
+    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 31536000
 
 @app.route('/')
 def index():
