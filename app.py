@@ -64,6 +64,6 @@ def search_news():
     except Exception as e:
         return jsonify({'error': f'오류가 발생했습니다: {str(e)}'}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+if __name__ == "__main__":
+    app.run(debug=True)
 
